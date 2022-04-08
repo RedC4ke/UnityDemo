@@ -3,7 +3,10 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - PlayerWeapon
+  - Obstacle
+  - EnemyHitbox
   layers:
   - Default
   - TransparentFX
@@ -11,9 +14,9 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Projectiles
+  - Player
+  - World
   - 
   - 
   - 
@@ -38,6 +41,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: WallBack
+    uniqueID: 2635947713
+    locked: 0
+  - name: World
+    uniqueID: 1388192935
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: WallFront
+    uniqueID: 3661452127
     locked: 0
