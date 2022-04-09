@@ -36,6 +36,11 @@ public abstract class Character : MonoBehaviour
         
     }
 
+    protected virtual void FixedUpdate()
+    {
+
+    }
+
     public virtual void ChangeHealth(float amount)
     {
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
@@ -82,9 +87,9 @@ public abstract class Character : MonoBehaviour
         }
     }
 
-    public void ApplyKnockback(Vector3 direction, float force)
+    public void ApplyKnockback(Vector2 direction, float force)
     {
-        characterRb.AddRelativeForce(direction.normalized * force * 100);
+        characterRb.AddRelativeForce(direction.normalized * force * 500);
     }
 
     abstract public void OnDeath();

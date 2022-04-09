@@ -20,6 +20,6 @@ public class MainController : MonoBehaviour
 
     public void GameOver()
     {
-        GameObject.Find("GameOverScreen").SetActive(true);
+        //GameObject.Find("GameOverScreen").SetActive(true);
     }
 }

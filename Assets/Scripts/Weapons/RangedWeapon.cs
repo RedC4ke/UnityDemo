@@ -7,7 +7,7 @@ public class RangedWeapon : Weapon
     [SerializeField] string projectileTag;
     GameObject projectileSpawner;
 
-    [SerializeField] float projectileSpeed = 200f;
+    [SerializeField] float projectileSpeed = 2000f;
 
     private void Start()
     {
@@ -16,7 +16,7 @@ public class RangedWeapon : Weapon
 
     protected override void Attack()
     {
-        Vector3 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        Vector3 direction = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
         float rotation = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg) - 90f;
 
         GameObject projectileObject = ObjectPooler.Instance.SpawnFromPool(projectileTag, projectileSpawner.transform.position, Quaternion.Euler(0f, 0f, rotation));
