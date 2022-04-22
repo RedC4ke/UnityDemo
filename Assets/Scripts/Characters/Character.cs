@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MEC;
 
 public abstract class Character : MonoBehaviour
 {
@@ -10,9 +11,11 @@ public abstract class Character : MonoBehaviour
     bool isMoving = false;
     public float lookDirection { get; protected set; }
 
-    protected Rigidbody2D characterRb;
+    public Rigidbody2D characterRb { get; protected set; }
     protected Animator characterAnim;
     protected SpriteRenderer characterRenderer;
+
+    public Vector2 lastTakenHitDirection;
 
     protected virtual void Start()
     {
@@ -28,6 +31,15 @@ public abstract class Character : MonoBehaviour
         {
             Debug.LogWarning("Character must have an Animator component!");
         }
+
+        currentHealth = maxHealth;
+    }
+
+    private void OnEnable()
+    {
+        if (characterAnim != null)
+            characterAnim.enabled = true;
+
     }
 
     // Update is called once per frame
@@ -47,7 +59,7 @@ public abstract class Character : MonoBehaviour
 
         if (amount < 0)
         {
-            StartCoroutine(FlashOnHit());
+            Timing.RunCoroutine(_FlashOnHit());
         }
 
         if (currentHealth == 0)
@@ -74,16 +86,16 @@ public abstract class Character : MonoBehaviour
         characterAnim.SetBool("IsMoving", isMoving);
     }
 
-    protected IEnumerator FlashOnHit()
+    protected IEnumerator<float> _FlashOnHit()
     {
         float timePassed = 0;
-        while (timePassed < 0.4)
+        while (timePassed < 0.2)
         {
             // Lerp from white to red and ping-pong back to sygnalize taken damage
-            characterRenderer.color = Color.Lerp(Color.white, CommonValues.hitColor, Mathf.PingPong(timePassed, 0.2f) * 5);
+            characterRenderer.color = Color.Lerp(Color.white, CommonValues.hitColor, Mathf.PingPong(timePassed, 0.1f) * 10);
 
             timePassed += Time.deltaTime;
-            yield return null;
+            yield return 0f;
         }
     }
 
@@ -93,4 +105,24 @@ public abstract class Character : MonoBehaviour
     }
 
     abstract public void OnDeath();
+
+    protected IEnumerator<float> _PlayDeathAnim(Vector2 lastHit)
+    {
+        // Stop animating
+        characterAnim.enabled = false;
+        
+        // Gives the character a knockback and fades it away
+        characterRb.AddForce(lastHit.normalized * 1500);
+
+        float timePassed = 0f;
+        while (timePassed < 1f)
+        {
+            characterRenderer.color = Color.Lerp(Color.white, Color.clear, Mathf.PingPong(timePassed, 1f));
+
+            timePassed += Time.deltaTime;
+            yield return 0f;
+        }
+
+        gameObject.SetActive(false);
+    }
 }

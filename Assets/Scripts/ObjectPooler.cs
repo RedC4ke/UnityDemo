@@ -25,10 +25,8 @@ public class ObjectPooler : MonoBehaviour
         }
 
         Instance = this;
-    }
 
-    void Start()
-    {
+
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
 
         foreach (Pool pool in pools)
@@ -44,6 +42,11 @@ public class ObjectPooler : MonoBehaviour
 
             poolDictionary[pool.tag] = objectPool;
         }
+    }
+
+    void Start()
+    {
+        
     }
 
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)

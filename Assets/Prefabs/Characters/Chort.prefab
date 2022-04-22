@@ -195,11 +195,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 50
-  movementSpeed: 15
+  movementSpeed: 5
   target: {fileID: 0}
   nextWaypointDistance: 3
-  attackDistance: 40
-  attackCooldown: 1
+  attackDistance: 3
+  attackCooldown: 2
+  attackDamage: 10
   attackForce: 50
 --- !u!1 &368173283036937086
 GameObject:

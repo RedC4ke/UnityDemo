@@ -29,6 +29,11 @@ public class Projectile : MonoBehaviour
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision != null && collision.gameObject.CompareTag("EnemyHitbox") && isDamaging) {
+            Debug.Log("Hit!");
+            // Deactivate projectile
+            gameObject.SetActive(false);
+            projectileRb.velocity = Vector3.zero;
+
             // Damage enemy
             EnemyCharacter enemy = collision.gameObject.transform.root.GetComponent<EnemyCharacter>();
             float finalDamage = usedWeapon.damage * damageMultiplier;
@@ -36,10 +41,9 @@ public class Projectile : MonoBehaviour
 
             // Apply knockback
             enemy.ApplyKnockback(projectileDirection, usedWeapon.knockbackForce * knockbackMultiplier);
-
-            // Deactivate projectile
-            gameObject.SetActive(false);
-            projectileRb.velocity = Vector3.zero;
+            
+            // Set attack direction on enemy character
+            enemy.lastTakenHitDirection = projectileDirection;
         }
 
     }

@@ -25,21 +25,23 @@ public class ChortEnemyCharacter : EnemyCharacter
 
     protected override IEnumerator<float> _Attack(Vector2 attackVector)
     {
-        characterRb.AddForce(attackVector.normalized * attackForce * 500);
         isOnCooldown = true;
+        // apply some wait time to make attack more dodgeable
+        yield return Timing.WaitForSeconds(0.2f);
+        characterRb.AddForce(attackVector.normalized * attackForce * 500);
 
         yield return Timing.WaitForSeconds(attackCooldown);
         isOnCooldown = false;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision != null && collision.gameObject.CompareTag("PlayerHitbox"))
+        if (collision != null && collision.gameObject.CompareTag("Player"))
         {
-            PlayerCharacter player = collision.gameObject.transform.root.GetComponent<PlayerCharacter>();
+            PlayerCharacter player = collision.gameObject.GetComponent<PlayerCharacter>();
             player.ChangeHealth(-attackDamage);
 
-            Vector2 knockbackDirection = -(collision.attachedRigidbody.position - characterRb.position).normalized;
+            Vector2 knockbackDirection = -(player.characterRb.position - characterRb.position).normalized;
             ApplyKnockback(knockbackDirection, attackForce / 1.2f);
         }
     }

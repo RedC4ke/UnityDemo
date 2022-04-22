@@ -27,7 +27,11 @@ public abstract class EnemyCharacter : Character
         base.Start();
 
         seeker = GetComponent<Seeker>();
+    }
 
+    private void OnEnable()
+    {
+        target = GameObject.Find("Player").transform;
         InvokeRepeating("UpdatePath", 0f, 0.5f);
     }
 
@@ -41,30 +45,41 @@ public abstract class EnemyCharacter : Character
     {
         base.FixedUpdate();
 
-        Vector2 attackVector = (Vector2)target.position - characterRb.position;
-        float distanceToTarget = attackVector.magnitude;
-        if (distanceToTarget > attackDistance)
-        {
-            HandlePathing();
-            Move(movementDirection);
-        }
-        else if (!isOnCooldown)
-        {
-            Timing.RunCoroutine(_Attack(attackVector));
-        }
+        AIUpdate();
     }
 
     protected abstract IEnumerator<float> _Attack(Vector2 attackVector);
 
     public override void OnDeath()
     {
-        throw new System.NotImplementedException();
+        CancelInvoke();
+        target = null;
+        Timing.RunCoroutine(_PlayDeathAnim(lastTakenHitDirection));
     }
 
     #region AI
+
+    void AIUpdate()
+    {
+        if (target != null)
+        {
+            Vector2 attackVector = (Vector2)target.position - characterRb.position;
+            float distanceToTarget = attackVector.magnitude;
+            if (distanceToTarget > attackDistance)
+            {
+                HandlePathing();
+                Move(movementDirection);
+            }
+            else if (!isOnCooldown)
+            {
+                Timing.RunCoroutine(_Attack(attackVector));
+            }
+        }
+    }
+
     void UpdatePath()
     {
-        if (seeker.IsDone())
+        if (seeker != null && seeker.IsDone())
         {
             seeker.StartPath(characterRb.position, target.position, OnPathComplete);
         }
